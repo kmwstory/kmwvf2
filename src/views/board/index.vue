@@ -4,6 +4,7 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      :items-per-page="5"
     >
       <template v-slot:item.id="{ item }">
         <v-btn icon @click="openDialog(item)"><v-icon>mdi-pencil</v-icon></v-btn>
@@ -46,13 +47,31 @@ export default {
         content: ''
       },
       dialog: false,
-      selectedItem: null
+      selectedItem: null,
+      unsubscribe: null
     }
   },
   created () {
-    this.read()
+    this.subscribe()
+  },
+  destroyed () {
+    if (this.unsubscribe) this.unsubscribe()
   },
   methods: {
+    subscribe () {
+      this.unsubscribe = this.$firebase.firestore().collection('boards').onSnapshot((sn) => {
+        if (sn.empty) {
+          this.items = []
+          return
+        }
+        this.items = sn.docs.map(v => {
+          const item = v.data()
+          return {
+            id: v.id, title: item.title, content: item.content
+          }
+        })
+      })
+    },
     openDialog (item) {
       this.selectedItem = item
       this.dialog = true
