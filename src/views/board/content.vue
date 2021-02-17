@@ -54,7 +54,7 @@ export default {
       })
     },
     async write () {
-      this.$router.push(this.$route.path + '/write')
+      this.$router.push(this.$route.path + '/board-write')
     }
   }
 }

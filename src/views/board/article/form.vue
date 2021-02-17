@@ -3,7 +3,7 @@
     <v-form>
       <v-card :loading="loading">
         <v-toolbar color="accent" dense flat dark>
-          <v-toolbar-title>게시판 정보 작성</v-toolbar-title>
+          <v-toolbar-title>게시판 글 작성</v-toolbar-title>
         <v-spacer/>
         <v-btn icon @click="$router.push('/board/' + document)"><v-icon>mdi-arrow-left</v-icon></v-btn>
         <v-btn icon @click="save"><v-icon>mdi-content-save</v-icon></v-btn>
@@ -47,7 +47,7 @@ export default {
   methods: {
     subscribe () {
       if (this.unsubscribe) this.unsubscribe()
-      this.ref = this.$firebase.firestore().collection('boards').doc(this.document)
+      this.ref = this.$firebase.firestore().collection('boards').doc(this.document).collection('articles').doc()
       this.unsubscribe = this.ref.onSnapshot(doc => {
         this.exists = doc.exists
         if (this.exists) {
@@ -59,25 +59,7 @@ export default {
       })
     },
     async save () {
-      const form = {
-        category: this.form.category,
-        title: this.form.title,
-        description: this.form.description,
-        updatedAt: new Date()
-      }
-      this.loading = true
-      try {
-        if (!this.exists) {
-          form.createdAt = new Date()
-          form.count = 0
-          await this.ref.set(form)
-        } else {
-          this.ref.update(form)
-        }
-        this.$router.push('/board/' + this.document)
-      } finally {
-        this.loading = false
-      }
+
     }
   }
 }
