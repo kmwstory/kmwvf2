@@ -33,6 +33,11 @@ export default {
       ref: null
     }
   },
+  computed: {
+    articleId () {
+      return this.$route.query.articleId
+    }
+  },
   watch: {
     document () {
       this.subscribe()
@@ -46,8 +51,10 @@ export default {
   },
   methods: {
     subscribe () {
+      console.log(this.articleId)
+      if (this.articleId === 'new') return
       if (this.unsubscribe) this.unsubscribe()
-      this.ref = this.$firebase.firestore().collection('boards').doc(this.document).collection('articles').doc()
+      this.ref = this.$firebase.firestore().collection('boards').doc(this.document).collection('articles').doc(this.articleId)
       this.unsubscribe = this.ref.onSnapshot(doc => {
         this.exists = doc.exists
         if (this.exists) {
