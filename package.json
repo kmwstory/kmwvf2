@@ -15,13 +15,13 @@
     "predeploy": "yarn build",
     "predeploy:hs": "yarn build",
     "serve:fn": "firebase serve --only functions"
-
   },
   "dependencies": {
     "@toast-ui/vue-editor": "^2.5.1",
     "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "firebase": "^7.14.2",
+    "moment": "^2.29.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuetify": "^2.2.11",
