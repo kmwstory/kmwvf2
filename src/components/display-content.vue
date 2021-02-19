@@ -1,22 +1,78 @@
 <template>
   <v-card>
-    <v-toolbar color="accent" dark>
+    <v-toolbar color="primary" dark>
       <v-toolbar-title>
         {{item.title}}
       </v-toolbar-title>
-      <v-spacer />
+      <v-spacer/>
+      <v-btn @click="articleWrite" icon><v-icon>mdi-pencil</v-icon></v-btn>
+      <v-btn @click="remove" icon><v-icon>mdi-delete-forever</v-icon></v-btn>
       <v-btn @click="$emit('close')" icon><v-icon>mdi-close</v-icon></v-btn>
     </v-toolbar>
-    <v-card-text>
-      {{item.url}}
+    <v-card-text >
+      <viewer v-if="content" :initialValue="content"></viewer>
+      <v-container v-else>
+        <v-row justify="center" align="center">
+          <v-progress-circular indeterminate></v-progress-circular>
+        </v-row>
+      </v-container>
     </v-card-text>
+    <v-card-actions>
+      <v-spacer/>
+      <span class="font-italic caption">
+        작성일: <display-time :time="item.createdAt"></display-time>
+      </span>
+    </v-card-actions>
+    <v-card-actions>
+      <v-spacer/>
+      <span class="font-italic caption">
+        수정일: <display-time :time="item.updatedAt"></display-time>
+      </span>
+    </v-card-actions>
+    <v-divider />
+    <display-comment :docRef="this.ref.collection('articles').doc(this.item.id)"></display-comment>
   </v-card>
 </template>
 <script>
+import axios from 'axios'
+import DisplayTime from '@/components/display-time'
+import DisplayComment from '@/components/display-comment'
+
 export default {
-  props: ['item'],
+  components: { DisplayTime, DisplayComment },
+  props: ['document', 'item'],
+  data () {
+    return {
+      content: '',
+      ref: this.$firebase.firestore().collection('boards').doc(this.document)
+    }
+  },
   mounted () {
     console.log('mounted')
+    this.fetch()
+  },
+  methods: {
+    async fetch () {
+      const r = await axios.get(this.item.url)
+      this.content = r.data
+      await this.ref.collection('articles').doc(this.item.id).update({
+        readCount: this.$firebase.firestore.FieldValue.increment(1)
+      })
+    },
+    async articleWrite () {
+      this.$router.push({ path: this.$route.path + '/article-write', query: { articleId: this.item.id } })
+    },
+    async remove () {
+      const batch = this.$firebase.firestore().batch()
+      batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(-1) }) // 글갯수 빼기
+      batch.delete(this.ref.collection('articles').doc(this.item.id)) // 글삭제
+      batch.commit()
+      // await this.ref.update({ count: this.$firebase.firestore.FieldValue.increment(-1) })
+      // await this.ref.collection('articles').doc(this.item.id).delete()
+      await this.$firebase.storage().ref().child('boards').child(this.document).child(this.item.id + '.md').delete()
+      // 스토리지 파일 삭제
+      this.$emit('close')
+    }
   }
 }
 </script>
