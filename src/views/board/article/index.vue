@@ -44,7 +44,6 @@ export default {
         { value: 'title', text: '제목' },
         { value: 'user.displayName', text: '작성자' },
         { value: 'readCount', text: '조회수' },
-        { value: 'commentCount', text: '댓글' },
         { value: 'commentCount', text: '댓글' }
       ],
       items: [],
@@ -124,7 +123,6 @@ export default {
       this.selectedItem = item
       this.dialog = true
     }
-
   }
 }
 </script>
