@@ -9,7 +9,10 @@ npm install
 ```
 npm run serve
 ```
-
+```bash
+$ firebase functions:config:set admin.email=xx@abc.com admin.db_url=https://xxx-site.firebaseio.com
+$ firebase functions:config:set admin.email=xx@abc.com admin.db_url=https://xxx-site.firebaseio.com admin.region=asia-northeast1 admin.bucket_url=memi-vf2.appspot.com
+```
 ### Compiles and minifies for production
 ```
 npm run build
