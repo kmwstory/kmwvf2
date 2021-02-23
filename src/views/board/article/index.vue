@@ -33,7 +33,6 @@ import { head, last } from 'lodash'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
 import DisplayContent from '@/components/display-content'
-
 export default {
   components: { DisplayTime, DisplayUser, DisplayContent },
   props: ['info', 'document'],
@@ -90,7 +89,6 @@ export default {
   methods: {
     subscribe (arrow) {
       if (this.unsubscribe) this.unsubscribe()
-
       const order = this.options.sortBy[0]
       const sort = this.options.sortDesc[0] ? 'desc' : 'asc'
       const limit = this.options.itemsPerPage
@@ -123,7 +121,6 @@ export default {
       this.selectedItem = item
       this.dialog = true
     }
-
   }
 }
 </script>
