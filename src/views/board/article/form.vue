@@ -102,10 +102,15 @@ export default {
           }
           // batch.set(this.ref.collection('articles').doc(id), doc)
           // batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(1) })
+<<<<<<< HEAD
           this.ref.collection('articles').doc(id).set(doc)
         } else {
           // batch.update(this.ref.collection('articles').doc(this.articleId), doc)
           this.ref.collection('articles').doc(this.articleId).update(doc)
+=======
+        } else {
+          // batch.update(this.ref.collection('articles').doc(this.articleId), doc)
+>>>>>>> 7b22680fc0e450467a2c90f04ef70f63764c0764
         }
         // await batch.commit()
       } finally {

@@ -2,6 +2,7 @@
 
 vue&firebase 2
 
+<<<<<<< HEAD
 # install
 
 ## firebase use
@@ -14,6 +15,19 @@ $ firebase use --add
 
 Created alias default for xxx-site.
 Now using alias default (xxx-site)
+=======
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+```bash
+$ firebase functions:config:set admin.email=xx@abc.com admin.db_url=https://xxx-site.firebaseio.com
+$ firebase functions:config:set admin.email=xx@abc.com admin.db_url=https://xxx-site.firebaseio.com admin.region=asia-northeast1 admin.bucket_url=memi-vf2.appspot.com
+```
+### Compiles and minifies for production
+```
+npm run build
+>>>>>>> 7b22680fc0e450467a2c90f04ef70f63764c0764
 ```
 
 ## functions

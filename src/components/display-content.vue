@@ -54,17 +54,33 @@ export default {
     async fetch () {
       const r = await axios.get(this.item.url)
       this.content = typeof r.data === 'string' ? r.data : r.data.toString()
+<<<<<<< HEAD
       // this.content = typeof r.data === 'string' ? r.data : r.data.toString()
       await this.ref.collection('articles').doc(this.item.id)
         .update({
           readCount: this.$firebase.firestore.FieldValue.increment(1)
         })
+=======
+      await this.ref.collection('articles').doc(this.item.id).update({
+        readCount: this.$firebase.firestore.FieldValue.increment(1)
+      })
+>>>>>>> 7b22680fc0e450467a2c90f04ef70f63764c0764
     },
     async articleWrite () {
       this.$router.push({ path: this.$route.path + '/article-write', query: { articleId: this.item.id } })
     },
     async remove () {
       // const batch = this.$firebase.firestore().batch()
+<<<<<<< HEAD
+=======
+      // batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(-1) }) // 글갯수 빼기
+      // batch.delete(this.ref.collection('articles').doc(this.item.id)) // 글삭제
+      // batch.commit()
+      // await this.$firebase.storage().ref().child('boards').child(this.document).child(this.$store.state.fireUser.uid).child(this.item.id + '.md').delete()
+      // 스토리지 파일 삭제
+
+      // const batch = this.$firebase.firestore().batch()
+>>>>>>> 7b22680fc0e450467a2c90f04ef70f63764c0764
       // batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(-1) })
       // batch.delete(this.ref.collection('articles').doc(this.item.id))
       // await batch.commit()
