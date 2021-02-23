@@ -15,7 +15,7 @@ export default {
       const ct = this.$moment()
       const diff = ct.diff(bt, 'days')
       if (diff > 0) return bt.toDate().toLocaleDateString()
-      return this.$moment(this.time).fromNow()
+      return bt.fromNow()
     }
   }
 }

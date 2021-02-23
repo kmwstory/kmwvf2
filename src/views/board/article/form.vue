@@ -10,9 +10,9 @@
         </v-toolbar>
         <v-card-text>
           <v-text-field v-model="form.title" outlined label="제목"></v-text-field>
-          <editor v-if="!articleId" :initialValue="form.content" ref="editor" initialEditType="wysiwyg" :options="{hideModeSwitch: true}"></editor>
+          <editor v-if="!articleId" :initialValue="form.content" ref="editor" initialEditType="wysiwyg" :options="{ hideModeSwitch: true }"></editor>
           <template v-else>
-            <editor v-if="form.content" :initialValue="form.content" ref="editor" initialEditType="wysiwyg" :options="{hideModeSwitch: true}"></editor>
+            <editor v-if="form.content" :initialValue="form.content" ref="editor" initialEditType="wysiwyg" :options="{ hideModeSwitch: true }"></editor>
             <v-container v-else>
               <v-row justify="center" align="center">
                 <v-progress-circular indeterminate></v-progress-circular>
@@ -26,11 +26,11 @@
 </template>
 <script>
 import axios from 'axios'
+
 export default {
   props: ['document', 'action'],
   data () {
     return {
-
       form: {
         title: '',
         content: ''
@@ -46,6 +46,9 @@ export default {
     },
     user () {
       return this.$store.state.user
+    },
+    fireUser () {
+      return this.$store.state.fireUser
     }
   },
   watch: {
@@ -57,7 +60,6 @@ export default {
     this.fetch()
   },
   destroyed () {
-
   },
   methods: {
     async fetch () {
@@ -72,6 +74,7 @@ export default {
       this.form.content = data
     },
     async save () {
+      if (!this.fireUser) throw Error('로그인이 필요합니다')
       this.loading = true
       try {
         const createdAt = new Date()
@@ -85,7 +88,7 @@ export default {
           url: url
         }
 
-        const batch = await this.$firebase.firestore().batch()
+        // const batch = await this.$firebase.firestore().batch()
 
         if (!this.articleId) {
           doc.createdAt = createdAt
@@ -97,12 +100,14 @@ export default {
             photoURL: this.user.photoURL,
             displayName: this.user.displayName
           }
-          batch.set(this.ref.collection('articles').doc(id), doc)
-          batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(1) })
+          // batch.set(this.ref.collection('articles').doc(id), doc)
+          // batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(1) })
+          this.ref.collection('articles').doc(id).set(doc)
         } else {
-          batch.update(this.ref.collection('articles').doc(this.articleId), doc)
+          // batch.update(this.ref.collection('articles').doc(this.articleId), doc)
+          this.ref.collection('articles').doc(this.articleId).update(doc)
         }
-        await batch.commit()
+        // await batch.commit()
       } finally {
         this.loading = false
         this.$router.push('/board/' + this.document)

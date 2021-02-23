@@ -16,8 +16,8 @@ export default new Vuex.Store({
     setFireUser (state, fu) {
       state.fireUser = fu
     },
-    setUser (state, fu) {
-      state.user = fu
+    setUser (state, user) {
+      state.user = user
     }
   },
   actions: {

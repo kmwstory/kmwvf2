@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify, { VSnackbar, VBtn, VIcon } from 'vuetify/lib'
 import VuetifyToast from 'vuetify-toast-snackbar'
+
 import en from 'vuetify/es5/locale/en'
 import ko from 'vuetify/es5/locale/ko'
 

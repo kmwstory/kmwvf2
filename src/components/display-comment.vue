@@ -80,7 +80,7 @@ export default {
       })
     },
     async more () {
-      if (!this.lastDoc) throw Error('더이상 댓글이 없습니다')
+      if (!this.lastDoc) throw Error('더이상 데이터가 없습니다')
       const sn = await this.docRef.collection('comments').orderBy('createdAt', 'desc').startAfter(this.lastDoc).limit(LIMIT).get()
       this.snapshotToItems(sn)
     },
@@ -100,16 +100,16 @@ export default {
         }
       }
       const id = doc.createdAt.getTime().toString()
-      const batch = this.$firebase.firestore().batch()
-      batch.update(this.docRef, { commentCount: this.$firebase.firestore.FieldValue.increment(1) })
-      batch.set(this.docRef.collection('comments').doc(id), doc)
-      await batch.commit()
+      // const batch = this.$firebase.firestore().batch()
+      // batch.update(this.docRef, { commentCount: this.$firebase.firestore.FieldValue.increment(1) })
+      // batch.set(this.docRef.collection('comments').doc(id), doc)
+      // await batch.commit()
+      this.docRef.collection('comments').doc(id).set(doc)
       this.comment = ''
     }
   }
 }
 </script>
-
 <style scoped>
 .comment {
   white-space: pre-wrap;

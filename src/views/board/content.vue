@@ -16,15 +16,12 @@
           <div class="text-right font-italic caption">수정일: {{info.updatedAt.toDate().toLocaleString()}}</div>
         </v-alert>
       </v-card-text>
-      <v-card-text>
-        <board-article :info="info" :document="document"></board-article>
-      </v-card-text>
+      <board-article :info="info" :document="document"></board-article>
     </v-card>
   </v-container>
 </template>
 <script>
 import BoardArticle from './article/index'
-
 export default {
   components: { BoardArticle },
   props: ['document'],

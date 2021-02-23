@@ -12,15 +12,15 @@
       must-sort
       item-key="id"
     >
-    <template v-slot:item.createdAt="{item}">
-      <display-time :time="item.createdAt"></display-time>
-    </template>
-    <template v-slot:item.title="{item}">
-      <a @click="openDialog(item)">{{item.title}}</a>
-    </template>
-    <template v-slot:item.user.displayName="{item}">
-      <display-user :user="item.user"></display-user>
-    </template>
+      <template v-slot:item.createdAt="{item}">
+        <display-time :time="item.createdAt"></display-time>
+      </template>
+      <template v-slot:item.title="{item}">
+        <a @click="openDialog(item)">{{item.title}}</a>
+      </template>
+      <template v-slot:item.user.displayName="{item}">
+        <display-user :user="item.user"></display-user>
+      </template>
 
     </v-data-table>
     <v-dialog v-if="selectedItem" v-model="dialog" fullscreen>
@@ -123,6 +123,7 @@ export default {
       this.selectedItem = item
       this.dialog = true
     }
+
   }
 }
 </script>

@@ -19,13 +19,11 @@ export default {
   },
   methods: {
     async write () {
-      const sn = await this.$firebase.storage().ref().child('test.txt').putString('abcd')
+      const sn = await this.$firebase.storage().ref().child('xxx.text').putString('abcd')
       const url = await sn.ref.getDownloadURL()
       this.url = url
-      console.log('complete')
     },
     async read () {
-      console.log('reading')
       const r = await axios.get(this.url)
       console.log(r)
       this.text = r.data

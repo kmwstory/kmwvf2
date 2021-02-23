@@ -6,7 +6,7 @@
       </v-toolbar-title>
       <v-spacer/>
       <v-btn @click="articleWrite" icon><v-icon>mdi-pencil</v-icon></v-btn>
-      <v-btn @click="remove" icon><v-icon>mdi-delete-forever</v-icon></v-btn>
+      <v-btn @click="remove" icon><v-icon>mdi-delete</v-icon></v-btn>
       <v-btn @click="$emit('close')" icon><v-icon>mdi-close</v-icon></v-btn>
     </v-toolbar>
     <v-card-text >
@@ -29,7 +29,7 @@
         수정일: <display-time :time="item.updatedAt"></display-time>
       </span>
     </v-card-actions>
-    <v-divider />
+    <v-divider/>
     <display-comment :article="item" :docRef="this.ref.collection('articles').doc(this.item.id)"></display-comment>
   </v-card>
 </template>
@@ -48,29 +48,28 @@ export default {
     }
   },
   mounted () {
-    console.log('mounted')
     this.fetch()
   },
   methods: {
     async fetch () {
       const r = await axios.get(this.item.url)
-      this.content = r.data
-      await this.ref.collection('articles').doc(this.item.id).update({
-        readCount: this.$firebase.firestore.FieldValue.increment(1)
-      })
+      this.content = typeof r.data === 'string' ? r.data : r.data.toString()
+      // this.content = typeof r.data === 'string' ? r.data : r.data.toString()
+      await this.ref.collection('articles').doc(this.item.id)
+        .update({
+          readCount: this.$firebase.firestore.FieldValue.increment(1)
+        })
     },
     async articleWrite () {
       this.$router.push({ path: this.$route.path + '/article-write', query: { articleId: this.item.id } })
     },
     async remove () {
-      const batch = this.$firebase.firestore().batch()
-      batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(-1) }) // 글갯수 빼기
-      batch.delete(this.ref.collection('articles').doc(this.item.id)) // 글삭제
-      batch.commit()
-      // await this.ref.update({ count: this.$firebase.firestore.FieldValue.increment(-1) })
-      // await this.ref.collection('articles').doc(this.item.id).delete()
-      await this.$firebase.storage().ref().child('boards').child(this.document).child(this.item.id + '.md').delete()
-      // 스토리지 파일 삭제
+      // const batch = this.$firebase.firestore().batch()
+      // batch.update(this.ref, { count: this.$firebase.firestore.FieldValue.increment(-1) })
+      // batch.delete(this.ref.collection('articles').doc(this.item.id))
+      // await batch.commit()
+      // await this.$firebase.storage().ref().child('boards').child(this.document).child(this.$store.state.fireUser.uid).child(this.item.id + '.md').delete()
+      this.ref.collection('articles').doc(this.item.id).delete()
       this.$emit('close')
     }
   }

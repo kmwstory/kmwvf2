@@ -5,14 +5,13 @@
       <site-title :title="site.title"></site-title>
       <v-spacer/>
       <site-sign></site-sign>
-      <v-btn @click="test">test</v-btn>
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer" width="400">
       <site-menu :items="site.menu"></site-menu>
     </v-navigation-drawer>
-    <v-content>
+    <v-main>
       <router-view/>
-    </v-content>
+    </v-main>
     <site-footer :footer="site.footer"></site-footer>
   </v-app>
 </template>
@@ -77,9 +76,6 @@ export default {
       }, (e) => {
         console.log(e.message)
       })
-    },
-    async test () {
-      await this.$firebase.firestore().collection('users').doc(this.$store.state.fireUser.uid).update({ level: 0, visitedAt: new Date(), visitCount: 0 })
     }
   }
 }

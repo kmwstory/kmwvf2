@@ -8,7 +8,7 @@
       <v-card-title>로그인</v-card-title>
       <v-divider/>
       <v-card-actions>
-        <v-btn color="red" dark @click="signInWithGoogle" block><v-icon left>mdi-google</v-icon> GOOGLE LOGIN</v-btn>
+        <v-btn color="red" dark @click="signInWithGoogle" block><v-icon left>mdi-google</v-icon> 구글로 로그인</v-btn>
       </v-card-actions>
       <v-card-actions>
         <v-btn color="blue" dark @click="signInWithFacebook" block><v-icon left>mdi-facebook</v-icon> 페이스북으로 로그인</v-btn>
