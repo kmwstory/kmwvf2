@@ -16,11 +16,10 @@
         </v-list-item-content>
         <v-list-item-action>
           <v-btn icon @click="like(item)">
-            <v-icon :color="liked(item) ? 'success' : ''">mdi-thumb-up</v-icon>
+            <v-icon :color="liked(item) ? 'success': ''">mdi-thumb-up</v-icon>
             <span>{{item.likeCount}}</span>
           </v-btn>
         </v-list-item-action>
-
         <v-list-item-action>
           <v-btn icon @click="remove(item)">
             <v-icon>mdi-delete</v-icon>
@@ -39,7 +38,6 @@ import { last } from 'lodash'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
 const LIMIT = 5
-
 export default {
   components: { DisplayTime, DisplayUser },
   props: ['article', 'docRef'],
@@ -57,6 +55,11 @@ export default {
     },
     fireUser () {
       return this.$store.state.fireUser
+    }
+  },
+  watch: {
+    docRef () {
+      this.subscribe()
     }
   },
   created () {
@@ -86,6 +89,7 @@ export default {
     },
     subscribe () {
       if (this.unsubscribe) this.unsubscribe()
+      this.items = []
       this.unsubscribe = this.docRef.collection('comments').orderBy('createdAt', 'desc').limit(LIMIT).onSnapshot(sn => {
         if (sn.empty) {
           this.items = []
