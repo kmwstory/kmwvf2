@@ -28,7 +28,6 @@
 import { head, last } from 'lodash'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
-
 export default {
   components: { DisplayTime, DisplayUser },
   props: ['board', 'boardId'],
@@ -39,7 +38,8 @@ export default {
         { value: 'title', text: '제목' },
         { value: 'user.displayName', text: '작성자' },
         { value: 'readCount', text: '조회수' },
-        { value: 'commentCount', text: '댓글' }
+        { value: 'commentCount', text: '댓글' },
+        { value: 'likeCount', text: '좋아요' }
       ],
       items: [],
       unsubscribe: null,
@@ -83,7 +83,6 @@ export default {
   methods: {
     subscribe (arrow) {
       if (this.unsubscribe) this.unsubscribe()
-
       const order = this.options.sortBy[0]
       const sort = this.options.sortDesc[0] ? 'desc' : 'asc'
       const limit = this.options.itemsPerPage
@@ -115,7 +114,6 @@ export default {
     read (item) {
       this.$router.push({ path: this.$route.path + '/' + item.id })
     }
-
   }
 }
 </script>
