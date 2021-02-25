@@ -4,7 +4,17 @@
       <v-card :key="item.id" :class="i < items.length - 1 ? 'mb-4' : ''" :to="`${boardId}/${item.id}`">
         <v-subheader>
 
-          <v-chip color="info" label small class="mr-4">{{item.category}}</v-chip>
+          <!-- <v-chip color="info" label small class="mr-4">{{item.category}}</v-chip> -->
+          <v-btn
+            v-if="category != item.category"
+            color="info"
+            depressed
+            small
+            class="mr-4"
+            :to="`${$route.path}?category=${item.category}`"
+          >
+          {{item.category}}
+          </v-btn>
           <display-time :time="item.createdAt"></display-time>
           <v-spacer/>
           <v-btn icon v-if="fireUser && fireUser.uid === item.uid" :to="`${boardId}/${item.id}?action=write`"><v-icon>mdi-pencil</v-icon></v-btn>
@@ -57,7 +67,7 @@ const LIMIT = 5
 
 export default {
   components: { DisplayTime, DisplayUser },
-  props: ['board', 'boardId'],
+  props: ['board', 'boardId', 'category'],
   data () {
     return {
       items: [],
@@ -76,6 +86,9 @@ export default {
   },
   watch: {
     boardId () {
+      this.subscribe()
+    },
+    category () {
       this.subscribe()
     }
   },
@@ -120,10 +133,17 @@ export default {
     subscribe (arrow) {
       if (this.unsubscribe) this.unsubscribe()
       this.items = []
-      this.ref = this.$firebase.firestore()
-        .collection('boards').doc(this.boardId)
-        .collection('articles').orderBy(this.order, this.sort).limit(LIMIT)
-
+      if (!this.category) {
+        this.ref = this.$firebase.firestore()
+          .collection('boards').doc(this.boardId)
+          .collection('articles').orderBy(this.order, this.sort).limit(LIMIT)
+      } else {
+        this.ref = this.$firebase.firestore()
+          .collection('boards').doc(this.boardId)
+          .collection('articles')
+          .where('category', '==', this.category)
+          .orderBy(this.order, this.sort).limit(LIMIT)
+      }
       this.unsubscribe = this.ref.onSnapshot(sn => {
         if (sn.empty) {
           this.items = []
