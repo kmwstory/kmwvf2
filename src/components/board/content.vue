@@ -117,6 +117,7 @@
 import BoardArticle from './article/index'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
+
 export default {
   components: { BoardArticle, DisplayTime, DisplayUser },
   props: ['boardId', 'category', 'tag'],

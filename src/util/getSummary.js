@@ -5,9 +5,8 @@ export default (text, limit) => {
   const ss = []
   for (const t of ts) {
     const index = t.indexOf('data:image')
-
     if (index >= 0) continue
-    ss.push(t)
+    if (t.length) ss.push(t)
   }
   const s = ss.join('\n')
   if (s.length > limit) {
