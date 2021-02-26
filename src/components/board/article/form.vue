@@ -50,7 +50,6 @@
 <script>
 import axios from 'axios'
 import getSummary from '@/util/getSummary'
-
 export default {
   props: ['boardId', 'articleId', 'action'],
   data () {
@@ -117,7 +116,7 @@ export default {
           category: this.form.category,
           tags: this.form.tags,
           updatedAt: createdAt,
-          summary: getSummary(md, 300)
+          summary: getSummary(md, 300, 'data:image')
         }
         if (this.articleId === 'new') {
           const id = createdAt.getTime().toString()
