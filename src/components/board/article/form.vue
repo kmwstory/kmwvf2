@@ -55,7 +55,7 @@ export default {
   data () {
     return {
       form: {
-        category: '일반',
+        category: '',
         tags: [],
         title: '',
         content: ''
