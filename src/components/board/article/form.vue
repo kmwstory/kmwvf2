@@ -84,8 +84,7 @@ export default {
         tags: [],
         title: '',
         content: '',
-        images: [],
-        thumbnails: []
+        images: []
       },
       exists: false,
       loading: false,
@@ -98,7 +97,10 @@ export default {
         hooks: {
           addImageBlobHook: this.addImageBlobHook
         }
-      }
+      },
+      plugins: [
+        [this.youtubePlugin]
+      ]
     }
   },
   computed: {
@@ -112,21 +114,49 @@ export default {
   watch: {
     boardId () {
       this.fetch()
+    },
+    articleId () {
+      this.fetch()
+    },
+    action () {
+      this.fetch()
     }
   },
   created () {
     this.fetch()
   },
+  mounted () {
+    // setTimeout(() => {
+    //   console.log(this.$refs.editor)
+    //   this.$refs.editor.invoke('setHtml', '<div>wwe<iframe width="560" height="315" src="https://www.youtube.com/embed/c4PlNjJCz2Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>')
+    // }, 2000)
+  },
   destroyed () {
+    // if (this.exists) return
   },
   methods: {
+    youtubePlugin () {
+      this.$refs.editor.codeBlockManager.setReplacer('youtube', youtubeId => {
+        console.log('here')
+        // Indentify multiple code blocks
+        const wrapperId = `yt${Math.random()
+          .toString(36)
+          .substr(2, 10)}`
+        // Avoid sanitizing iframe tag
+        setTimeout(this.renderYoutube.bind(null, wrapperId, youtubeId), 0)
+        return `<div id="${wrapperId}"></div>`
+      })
+    },
+    renderYoutube (wrapperId, youtubeId) {
+      const el = document.querySelector(`#${wrapperId}`)
+      el.innerHTML = `<iframe width="420" height="315" src="https://www.youtube.com/embed/${youtubeId}"></iframe>`
+    },
     async fetch () {
       this.ref = this.$firebase.firestore().collection('boards').doc(this.boardId)
       this.loaded = false
       const docBoard = await this.ref.get()
       this.loaded = true
       this.board = docBoard.data()
-      // if (this.articleId === 'new') return
       const doc = await this.ref.collection('articles').doc(this.articleId).get()
       this.exists = doc.exists
       if (!this.exists) return
@@ -152,8 +182,7 @@ export default {
           title: this.form.title,
           category: this.form.category,
           tags: this.form.tags,
-          images: this.form.images,
-          thumbnails: this.form.thumbnails,
+          images: this.findImagesFromDoc(md, this.form.images), // this.form.images,
           updatedAt: new Date(),
           summary: getSummary(md, 300, 'data:image')
         }
@@ -173,6 +202,7 @@ export default {
           doc.likeCount = 0
           doc.likeUids = []
           await this.ref.collection('articles').doc(this.articleId).set(doc)
+          this.exists = true
           this.$router.push('/board/' + this.boardId)
         } else {
           const fn = this.articleId + '-' + this.article.uid + '.md'
@@ -184,44 +214,42 @@ export default {
         this.loading = false
       }
     },
+    findImagesFromDoc (md, images) {
+      const filteredImages = images.filter(image => {
+        return md.indexOf(image.url) >= 0
+      })
+      return filteredImages
+    },
     async imageUpload (file) {
       if (!this.fireUser) throw Error('로그인이 필요합니다')
       const thumbnail = await imageCompress(file)
       const image = {
-        origin: {
-          size: file.size,
-          id: '',
-          url: ''
-        },
-        thumbnail: {
-          size: thumbnail.size,
-          id: '',
-          url: ''
-        }
+        size: file.size,
+        id: '',
+        url: '',
+        thumbSize: thumbnail.size,
+        thumbId: '',
+        thumbUrl: ''
       }
-      image.origin.id = new Date().getTime() + '-' + this.fireUser.uid + '-' + file.name
+      image.id = new Date().getTime() + '-' + this.fireUser.uid + '-' + file.name
       const sn = await this.$firebase.storage().ref()
         .child('images').child('boards')
-        .child(this.boardId).child(this.articleId).child(image.origin.id)
-        // .child('images').child('public').child(fn)
+        .child(this.boardId).child(this.articleId).child(image.id)
         .put(file)
-      image.origin.url = await sn.ref.getDownloadURL()
-      image.thumbnail.id = new Date().getTime() + '-' + this.fireUser.uid + '-thumb-' + file.name
+      image.url = await sn.ref.getDownloadURL()
+      image.thumbId = new Date().getTime() + '-' + this.fireUser.uid + '-thumb-' + file.name
       const snt = await this.$firebase.storage().ref()
         .child('images').child('boards')
-        .child(this.boardId).child(this.articleId).child(image.thumbnail.id)
-        // .child('images').child('public').child(fn)
+        .child(this.boardId).child(this.articleId).child(image.thumbId)
         .put(thumbnail)
-      image.thumbnail.url = await snt.ref.getDownloadURL()
-      this.form.images.push(image.origin)
-      this.form.thumbnails.push(image.thumbnail)
+      image.thumbUrl = await snt.ref.getDownloadURL()
+      this.form.images.push(image)
       return image
     },
     addImageBlobHook (blob, callback) {
-      console.log(blob)
       this.imageUpload(blob)
         .then(image => {
-          callback(image.thumbnail.url, 'img')
+          callback(image.url, 'img')
         })
         .catch(console.error)
     }
